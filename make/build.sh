@@ -49,14 +49,16 @@ fi
 dr=../inventory
 if [ -e "$dr" ]; then
   echo "Directory $dr exists"
+  cd ../inventory
 else
   echo "Directory $dr does not exists"
   cd ..
   git clone https://github.com/MarketStreetSoftware/inventory
+  cd inventory
 fi
 
-cd inventory
 ./gradlew clean build -x test
+java -jar -DdynamoDbEndpoint=http://localhost:8000 -Dserver.port=8890 build/libs/spring-rest-dynamodb-example.jar
 if ps aux | grep  "$servicedocker"; then
     echo "Docker is running"
 #    ./gradlew buildDocker -x itest
